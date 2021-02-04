@@ -35,7 +35,9 @@ function sayHelloArgument($arg)
  */
 function sayHelloArgumentWrapper($arg)
 {
-    // put your code here
+    if( !is_bool($arg) || !is_string($arg) || !is_numeric($arg)) {
+        throw new InvalidArgumentException('Invalid argument!');
+    }
 
     return sayHelloArgument($arg);
 }

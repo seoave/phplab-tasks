@@ -10,6 +10,18 @@
  */
 function repeatArrayValues(array $input)
 {
+
+    $digitArr = [];
+
+    if($input) {
+        foreach($input as $digit) {
+            for ($i=0; $i < $digit; $i++) {
+                $digitArr[] = $digit;
+            }
+        }
+    }
+
+    return $digitArr;
 }
 
 /**
@@ -22,6 +34,29 @@ function repeatArrayValues(array $input)
  */
 function getUniqueValue(array $input)
 {
+    $uniques = [];
+
+    foreach ($input as $digit) {
+
+        $tmpArr = [];
+        foreach ($input as $key => $value) {
+            if($value == $digit) {
+                $tmpArr[] = $key;
+            }
+        }
+        if(count($tmpArr) == 1) {
+            $uniques[] = $digit;
+        }
+    }
+
+    if($uniques) {
+        sort($uniques);
+        $lowest = array_shift($uniques);
+        return $lowest;
+    } else {
+        return 0;
+    }
+
 }
 
 /**
@@ -50,4 +85,32 @@ function getUniqueValue(array $input)
  */
 function groupByTag(array $input)
 {
+    // create tags arrays
+    $tagsArr = [];
+    foreach ($input as $row) {
+        $tags = $row['tags'];
+        foreach ($tags as $tag) {
+            $tagsArr[] = $tag;
+        }
+    }
+
+    sort($tagsArr);
+    $tagsArr = array_unique($tagsArr);
+
+// new array, where key = tag and value = names;
+    foreach ($tagsArr as $tag) {
+
+        foreach ($input as $row) {
+            foreach($row as $key => $value) {
+                if($key == "tags") {
+                    if(in_array($tag,$value)) {
+                        $names[$tag][] = $row['name'];
+                        sort($names[$tag]);
+                    }
+                }
+            }
+        }
+    }
+
+    return $names;
 }
