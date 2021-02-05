@@ -2,16 +2,17 @@
 
 use PHPUnit\Framework\TestCase;
 
-class SayHelloArgumentWrapperTest extends TestCase
+class CountArgumentsWrapperTest extends TestCase
 {
     /**
-     * @expectedException InvalidArgumentException
+     *
      */
+
     public function testException()
     {
         $this->expectException(InvalidArgumentException::class);
 
-       sayHelloArgumentWrapper(null);
+        countArgumentsWrapper(null);
     }
 
 }

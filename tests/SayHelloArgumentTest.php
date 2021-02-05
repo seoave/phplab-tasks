@@ -17,7 +17,7 @@ class SayHelloArgumentTest extends TestCase
         return [
             [8, 'Hello 8'],
             ['Kyiv', 'Hello Kyiv'],
-            [true, 'Hello true'],
+            [true, 'Hello 1'],
         ];
     }
 }

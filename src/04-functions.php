@@ -69,7 +69,13 @@ function countArguments()
  * @return array
  * @throws InvalidArgumentException
  */
-function countArgumentsWrapper()
+function countArgumentsWrapper(...$input)
 {
-    // put your code here
+    foreach ($input as $item) {
+        if(!is_string($item)) {
+            throw new InvalidArgumentException('Invalid argument type, string allow');
+        }
+    }
+
+    countArguments(...$input);
 }
