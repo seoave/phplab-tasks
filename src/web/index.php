@@ -23,6 +23,10 @@ $airports = require './airports.php';
  * and apply pagination logic
  * (see Pagination task below)
  */
+// debug info
+echo 'Debug info<br>';
+var_dump($_REQUEST);
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -53,7 +57,7 @@ $airports = require './airports.php';
         Filter by first letter:
 
         <?php foreach (getUniqueFirstLetters(require './airports.php') as $letter): ?>
-            <a href="#"><?= $letter ?></a>
+            <a href="index.php?filter_by_first_letter=<?= $letter ?>"><?= $letter ?></a>
         <?php endforeach; ?>
 
         <a href="/" class="float-right">Reset all filters</a>
@@ -72,10 +76,10 @@ $airports = require './airports.php';
     <table class="table">
         <thead>
         <tr>
-            <th scope="col"><a href="#">Name</a></th>
-            <th scope="col"><a href="#">Code</a></th>
-            <th scope="col"><a href="#">State</a></th>
-            <th scope="col"><a href="#">City</a></th>
+            <th scope="col"><a href="index.php?sort=name">Name</a></th>
+            <th scope="col"><a href="index.php?sort=code">Code</a></th>
+            <th scope="col"><a href="index.php?sort=state">State</a></th>
+            <th scope="col"><a href="index.php?sort=city">City</a></th>
             <th scope="col">Address</th>
             <th scope="col">Timezone</th>
         </tr>
@@ -95,7 +99,7 @@ $airports = require './airports.php';
         <tr>
             <td><?= $airport['name'] ?></td>
             <td><?= $airport['code'] ?></td>
-            <td><a href="#"><?= $airport['state'] ?></a></td>
+            <td><a href="index.php?filter_by_state=<?= $airport['state'][0] ?>"><?= $airport['state'] ?></a></td>
             <td><?= $airport['city'] ?></td>
             <td><?= $airport['address'] ?></td>
             <td><?= $airport['timezone'] ?></td>
