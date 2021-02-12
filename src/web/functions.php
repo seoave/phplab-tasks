@@ -9,7 +9,7 @@
  * @param  array  $airports
  * @return string[]
  */
-function getUniqueFirstLetters(array $airports)
+function getUniqueFirstLetters(array $airports): array
 {
     // get new first letters array
     foreach ($airports as $port) {
@@ -21,4 +21,17 @@ function getUniqueFirstLetters(array $airports)
     sort($result);
 
     return $result;
+}
+
+function lookingFirstLetter($letter, $airports): array
+{
+    $filteredArr = [];
+    foreach ($airports as $airport) {
+        $firstLetter = $airport['name'][0];
+        if($firstLetter === $letter) {
+            $filteredArr[] = $airport;
+        }
+    }
+
+    return $filteredArr;
 }
