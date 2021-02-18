@@ -1,5 +1,4 @@
 <?php
-require_once '../../vendor/autoload.php';
 
 use src\oop\Calculator;
 use src\oop\Commands\SubCommand;
