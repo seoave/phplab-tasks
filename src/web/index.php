@@ -9,9 +9,30 @@ $airports = require './airports.php';
  * and apply filtering by First Airport Name Letter and/or Airport State
  * (see Filtering tasks 1 and 2 below)
  */
-if(isset($_GET['filter_by_first_letter'])) {
+
+session_start();
+if (isset($_GET['filter_by_first_letter'])) {
     $letter = $_GET['filter_by_first_letter'];
-    $airports = lookingFirstLetter($letter,$airports);
+    $_SESSION['letter'] = $letter;
+    $_SESSION['page'] = 1;
+    if ($_SESSION['state']) {
+        $airports = lookingState($_SESSION['state'], $airports);
+    }
+    $airports = lookingFirstLetter($letter, $airports);
+}
+
+if (isset($_GET['filter_by_state'])) {
+    $state = $_GET['filter_by_state'];
+    $_SESSION['state'] = $state;
+    $airports = lookingState($state, $airports);
+    if ($_SESSION['letter']) {
+        $airports = lookingFirstLetter($_SESSION['letter'], $airports);
+    }
+}
+
+// clear all session variables when reset filters
+if (!$_GET) {
+    $_SESSION = [];
 }
 
 // Sorting
@@ -21,16 +42,53 @@ if(isset($_GET['filter_by_first_letter'])) {
  * (see Sorting task below)
  */
 
+if (isset($_GET['sort'])) {
+    $sortKey = $_GET['sort'];
+    $_SESSION['sort'] = $sortKey;
+
+    // get sorting arrays by column: for letter filter or state filter
+    if ($_SESSION['letter']) {
+        $airports = lookingFirstLetter($_SESSION['letter'], $airports);
+    }
+    if ($_SESSION['state']) {
+        $airports = lookingState($_SESSION['state'], $airports);
+    }
+    foreach ($airports as $airport) {
+        $sortingArr[] = $airport[$sortKey];
+    }
+
+    // sort by using sorting array
+    array_multisort($sortingArr, $airports);
+}
+
 // Pagination
 /**
  * Here you need to check $_GET request if it has pagination key
  * and apply pagination logic
  * (see Pagination task below)
  */
+
+// set qty airports on page
+$paged = 5;
+
+// find qty pages
+$pages = ceil(count($airports) / $paged);
+if (isset($_GET['page'])) :
+    $j = $_GET['page'] - 1;
+    $offset = $j * $paged;
+
+    // get array for one page
+    $airports = array_slice($airports, $offset, $paged);
+endif;
+
 // debug info
 echo 'Debug info<br>';
 var_dump($_REQUEST);
-// var_dump($airports);
+echo '<br>sessions: <br>';
+var_dump($_SESSION);
+echo '<br>pagination: <br>';
+var_dump($pages);
+var_dump(count($airports));
 ?>
 <!doctype html>
 <html lang="en">
@@ -40,7 +98,8 @@ var_dump($_REQUEST);
     <meta name="description" content="">
     <title>Airports</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
 <body>
 <main role="main" class="container">
@@ -57,6 +116,7 @@ var_dump($_REQUEST);
          - when you apply filter_by_first_letter, than filter_by_state (see Filtering task #2) is not reset
            i.e. if you have filter_by_state set you can additionally use filter_by_first_letter
     -->
+
     <div class="alert alert-dark">
         Filter by first letter:
 
@@ -100,14 +160,14 @@ var_dump($_REQUEST);
                i.e. if you have filter_by_first_letter set you can additionally use filter_by_state
         -->
         <?php foreach ($airports as $airport): ?>
-        <tr>
-            <td><?= $airport['name'] ?></td>
-            <td><?= $airport['code'] ?></td>
-            <td><a href="index.php?filter_by_state=<?= $airport['state'][0] ?>"><?= $airport['state'] ?></a></td>
-            <td><?= $airport['city'] ?></td>
-            <td><?= $airport['address'] ?></td>
-            <td><?= $airport['timezone'] ?></td>
-        </tr>
+            <tr>
+                <td><?= $airport['name'] ?></td>
+                <td><?= $airport['code'] ?></td>
+                <td><a href="index.php?filter_by_state=<?= $airport['state'] ?>"><?= $airport['state'] ?></a></td>
+                <td><?= $airport['city'] ?></td>
+                <td><?= $airport['address'] ?></td>
+                <td><?= $airport['timezone'] ?></td>
+            </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
@@ -121,13 +181,38 @@ var_dump($_REQUEST);
          - use page key (i.e. /?page=1)
          - when you apply pagination - all filters and sorting are not reset
     -->
-    <nav aria-label="Navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-        </ul>
-    </nav>
+    <?php if ($_SESSION) { ?>
+        <nav aria-label="Navigation">
+            <ul class="pagination justify-content-center">
+                <?php
+                for ($i = 0; $i < $pages; $i++) :
+                    $pageNumber = $i + 1;
+                    if ($pageNumber == $_GET['page']) {
+                        $active = "active";
+                    } else {
+                        $active = '';
+                    }
+
+                    $pageUrl = $pageNumber;
+                    if ($_SESSION['letter']) {
+                        $pageUrl .= '&filter_by_first_letter=' . $_SESSION['letter'];
+                    }
+                    if ($_SESSION['state']) {
+                        $pageUrl .= '&filter_by_state=' . $_SESSION['state'];
+                    }
+                    if ($_SESSION['sort']) {
+                        $pageUrl .= '&sort=' . $_SESSION['sort'];
+                    }
+
+                    ?>
+
+                    <li class="page-item <?= $active ?>"><a class="page-link"
+                                                            href="index.php?page=<?= $pageUrl ?>"><?= $pageNumber ?></a>
+                    </li>
+                <?php endfor ?>
+            </ul>
+        </nav>
+    <?php } ?>
 
 </main>
 </html>

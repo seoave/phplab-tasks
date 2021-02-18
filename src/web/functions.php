@@ -35,3 +35,16 @@ function lookingFirstLetter($letter, $airports): array
 
     return $filteredArr;
 }
+
+function lookingState($newState, $airports): array
+{
+    $filteredArr = [];
+    foreach ($airports as $airport) {
+        $state = $airport['state'];
+        if($state === $newState) {
+            $filteredArr[] = $airport;
+        }
+    }
+
+    return $filteredArr;
+}
