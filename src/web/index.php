@@ -14,7 +14,6 @@ session_start();
 if (isset($_GET['filter_by_first_letter'])) {
     $letter = $_GET['filter_by_first_letter'];
     $_SESSION['letter'] = $letter;
-    $_SESSION['page'] = 1;
     if ($_SESSION['state']) {
         $airports = lookingState($_SESSION['state'], $airports);
     }
@@ -80,15 +79,6 @@ if (isset($_GET['page'])) :
     // get array for one page
     $airports = array_slice($airports, $offset, $paged);
 endif;
-
-// debug info
-echo 'Debug info<br>';
-var_dump($_REQUEST);
-echo '<br>sessions: <br>';
-var_dump($_SESSION);
-echo '<br>pagination: <br>';
-var_dump($pages);
-var_dump(count($airports));
 ?>
 <!doctype html>
 <html lang="en">
@@ -121,7 +111,7 @@ var_dump(count($airports));
         Filter by first letter:
 
         <?php foreach (getUniqueFirstLetters(require './airports.php') as $letter): ?>
-            <a href="index.php?filter_by_first_letter=<?= $letter ?>"><?= $letter ?></a>
+            <a href="index.php?page=1&filter_by_first_letter=<?= $letter ?>"><?= $letter ?></a>
         <?php endforeach; ?>
 
         <a href="index.php" class="float-right">Reset all filters</a>
@@ -140,10 +130,10 @@ var_dump(count($airports));
     <table class="table">
         <thead>
         <tr>
-            <th scope="col"><a href="index.php?sort=name">Name</a></th>
-            <th scope="col"><a href="index.php?sort=code">Code</a></th>
-            <th scope="col"><a href="index.php?sort=state">State</a></th>
-            <th scope="col"><a href="index.php?sort=city">City</a></th>
+            <th scope="col"><a href="index.php?page=1&sort=name">Name</a></th>
+            <th scope="col"><a href="index.php?page=1&sort=code">Code</a></th>
+            <th scope="col"><a href="index.php?page=1&sort=state">State</a></th>
+            <th scope="col"><a href="index.php?page=1&sort=city">City</a></th>
             <th scope="col">Address</th>
             <th scope="col">Timezone</th>
         </tr>
@@ -163,7 +153,7 @@ var_dump(count($airports));
             <tr>
                 <td><?= $airport['name'] ?></td>
                 <td><?= $airport['code'] ?></td>
-                <td><a href="index.php?filter_by_state=<?= $airport['state'] ?>"><?= $airport['state'] ?></a></td>
+                <td><a href="index.php?page=1&filter_by_state=<?= $airport['state'] ?>"><?= $airport['state'] ?></a></td>
                 <td><?= $airport['city'] ?></td>
                 <td><?= $airport['address'] ?></td>
                 <td><?= $airport['timezone'] ?></td>
@@ -181,7 +171,7 @@ var_dump(count($airports));
          - use page key (i.e. /?page=1)
          - when you apply pagination - all filters and sorting are not reset
     -->
-    <?php if ($_SESSION) { ?>
+    <?php if ($_SESSION['letter'] || $_SESSION['state']) { ?>
         <nav aria-label="Navigation">
             <ul class="pagination justify-content-center">
                 <?php
