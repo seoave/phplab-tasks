@@ -5,7 +5,7 @@
  * without changing the order.
  * Example: [1,3,2] => [1,3,3,3,2,2]
  *
- * @param  array  $input
+ * @param array $input
  * @return array
  */
 function repeatArrayValues(array $input)
@@ -13,9 +13,9 @@ function repeatArrayValues(array $input)
 
     $digitArr = [];
 
-    if($input) {
-        foreach($input as $digit) {
-            for ($i=0; $i < $digit; $i++) {
+    if ($input) {
+        foreach ($input as $digit) {
+            for ($i = 0; $i < $digit; $i++) {
                 $digitArr[] = $digit;
             }
         }
@@ -29,7 +29,7 @@ function repeatArrayValues(array $input)
  * Return the lowest unique value or 0 if there is no unique values or array is empty.
  * Example: [1, 2, 3, 2, 1, 5, 6] => 3
  *
- * @param  array  $input
+ * @param array $input
  * @return int
  */
 function getUniqueValue(array $input)
@@ -40,16 +40,16 @@ function getUniqueValue(array $input)
 
         $tmpArr = [];
         foreach ($input as $key => $value) {
-            if($value == $digit) {
+            if ($value == $digit) {
                 $tmpArr[] = $key;
             }
         }
-        if(count($tmpArr) == 1) {
+        if (count($tmpArr) == 1) {
             $uniques[] = $digit;
         }
     }
 
-    if($uniques) {
+    if ($uniques) {
         sort($uniques);
         $lowest = array_shift($uniques);
         return $lowest;
@@ -80,7 +80,7 @@ function getUniqueValue(array $input)
  *  'yellow' => ['orange', 'potato'],
  * ]
  *
- * @param  array  $input
+ * @param array $input
  * @return array
  */
 function groupByTag(array $input)
@@ -101,9 +101,9 @@ function groupByTag(array $input)
     foreach ($tagsArr as $tag) {
 
         foreach ($input as $row) {
-            foreach($row as $key => $value) {
-                if($key == "tags") {
-                    if(in_array($tag,$value)) {
+            foreach ($row as $key => $value) {
+                if ($key == "tags") {
+                    if (in_array($tag, $value)) {
                         $names[$tag][] = $row['name'];
                         sort($names[$tag]);
                     }

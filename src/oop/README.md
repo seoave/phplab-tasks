@@ -18,6 +18,7 @@ For example, SubCommand - knows how to do subtraction, SumCommand - how to do ad
 use src\oop\Calculator;
 use src\oop\Commands\SubCommand;
 use src\oop\Commands\SumCommand;
+use src\oop\Commands\MultiCommand;
 
 $calc = new Calculator(); // the calculator itself
 $calc->addCommand('+', new SumCommand()); // here we teach calculator how to do Addition

@@ -1,9 +1,8 @@
 <?php
+
 namespace src\oop\Commands;
 
-require_once 'CommandInterface.php';
-
-class SumCommand implements CommandInterface
+class MultiCommand implements CommandInterface
 {
     /**
      * @inheritdoc
@@ -14,6 +13,6 @@ class SumCommand implements CommandInterface
             throw new \InvalidArgumentException('Not enough parameters');
         }
 
-        return $args[0] + $args[1];
+        return $args[0] * $args[1];
     }
 }

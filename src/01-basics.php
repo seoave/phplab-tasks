@@ -10,8 +10,7 @@
  * @return string
  * @throws InvalidArgumentException
  */
-function getMinuteQuarter(int $minute)
-{
+function getMinuteQuarter(int $minute) {
     if($minute >= 0 && $minute < 60) {
         $isOk = true;
     } else {
@@ -35,7 +34,6 @@ function getMinuteQuarter(int $minute)
             return 'fourth';
         }
     }
-
 }
 
 /**
@@ -49,15 +47,14 @@ function getMinuteQuarter(int $minute)
  * @return boolean
  * @throws InvalidArgumentException
  */
-function isLeapYear(int $year)
-{
+function isLeapYear(int $year) {
     if($year > 1900) {
         $validYear = true;
     } else {
         throw new InvalidArgumentException('Invalid year');
     }
 
-    if($year % 4 != 0 ) {
+    if($year % 4 != 0) {
         return false;
     } elseif ($year % 100 !=0) {
         return true;
@@ -79,8 +76,7 @@ function isLeapYear(int $year)
  * @return boolean
  * @throws InvalidArgumentException
  */
-function isSumEqual(string $input)
-{
+function isSumEqual(string $input) {
     if(strlen($input) == 6 && is_numeric($input)) {
         $validInput = true;
     } else {

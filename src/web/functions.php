@@ -6,10 +6,10 @@
  *
  * Create a PhpUnit test (GetUniqueFirstLettersTest) which will check this behavior
  *
- * @param  array  $airports
+ * @param array $airports
  * @return string[]
  */
-function getUniqueFirstLetters(array $airports): array
+function getUniqueFirstLetters(array $airports)
 {
     // get new first letters array
     foreach ($airports as $port) {
@@ -23,12 +23,12 @@ function getUniqueFirstLetters(array $airports): array
     return $result;
 }
 
-function lookingFirstLetter($letter, $airports): array
+function lookingFirstLetter($letter, $airports)
 {
     $filteredArr = [];
     foreach ($airports as $airport) {
         $firstLetter = $airport['name'][0];
-        if($firstLetter === $letter) {
+        if ($firstLetter === $letter) {
             $filteredArr[] = $airport;
         }
     }
@@ -36,12 +36,12 @@ function lookingFirstLetter($letter, $airports): array
     return $filteredArr;
 }
 
-function lookingState($newState, $airports): array
+function lookingState($newState, $airports)
 {
     $filteredArr = [];
     foreach ($airports as $airport) {
         $state = $airport['state'];
-        if($state === $newState) {
+        if ($state === $newState) {
             $filteredArr[] = $airport;
         }
     }
