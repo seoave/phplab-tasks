@@ -138,16 +138,6 @@ if($params) {
 }
 $airports = $sth->fetchAll();
 
-echo 'debug<br>';
-echo '<pre>';
-var_dump($_REQUEST);
-var_dump($letter);
-var_dump($query);
-var_dump($params);
-//var_dump($airports);
-echo '</pre>'; 
-
-// $airports = [];
 ?>
 <!doctype html>
 <html lang="en">
