@@ -9,7 +9,7 @@
  * @param array $airports
  * @return string[]
  */
-function getUniqueFirstLetters(array $airports)
+function getUniqueFirstLetters(array $airports): array
 {
     // get new first letters array
     foreach ($airports as $port) {
@@ -23,7 +23,7 @@ function getUniqueFirstLetters(array $airports)
     return $result;
 }
 
-function lookingFirstLetter($letter, $airports)
+function lookingFirstLetter($letter, $airports): array
 {
     $filteredArr = [];
     foreach ($airports as $airport) {
@@ -36,7 +36,7 @@ function lookingFirstLetter($letter, $airports)
     return $filteredArr;
 }
 
-function lookingState($newState, $airports)
+function lookingState($newState, $airports): array
 {
     $filteredArr = [];
     foreach ($airports as $airport) {

@@ -17,7 +17,7 @@ $uniqueFirstLetters = $sth->fetchAll(PDO::FETCH_COLUMN);
 
 // Filtering
 /**
- * 
+ *
  * Here you need to check $_GET request if it has any filtering
  * and apply filtering by First Airport Name Letter and/or Airport State
  * (see Filtering tasks 1 and 2 below)
@@ -27,7 +27,7 @@ $uniqueFirstLetters = $sth->fetchAll(PDO::FETCH_COLUMN);
  * where A - requested filter value
  */
 $params = [];
-if(isset($_GET['filter_by_first_letter'])) {
+if (isset($_GET['filter_by_first_letter'])) {
     $letter = $_GET['filter_by_first_letter'];
 
     $query = <<<'SQL'
@@ -47,7 +47,7 @@ if(isset($_GET['filter_by_first_letter'])) {
     $params['letter'] = $letter . '%';
 }
 
-if(isset($_GET['filter_by_state'])) {
+if (isset($_GET['filter_by_state'])) {
     $state = $_GET['filter_by_state'];
 
     $query = <<<'SQL'
@@ -77,7 +77,7 @@ if(isset($_GET['filter_by_state'])) {
  * where A - requested filter value
  */
 
-if(isset($_GET['sort'])) {
+if (isset($_GET['sort'])) {
     $sort = $_GET['sort'];
 
     $query = <<<'SQL'
@@ -113,7 +113,7 @@ if(isset($_GET['sort'])) {
  *
  * For city_name and state_name fields you can use alias https://www.mysqltutorial.org/mysql-alias/
  */
-if(!$query) {
+if (!$query) {
     $query = <<<'SQL'
     SELECT 
     airports.name, 
@@ -131,7 +131,7 @@ if(!$query) {
 $sth = $pdo->prepare($query);
 $sth->setFetchMode(\PDO::FETCH_ASSOC);
 
-if($params) {
+if ($params) {
     $sth->execute($params);
 } else {
     $sth->execute();
@@ -147,7 +147,8 @@ $airports = $sth->fetchAll();
     <meta name="description" content="">
     <title>Airports</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
 <body>
 <main role="main" class="container">
@@ -207,14 +208,16 @@ $airports = $sth->fetchAll();
                i.e. if you have filter_by_first_letter set you can additionally use filter_by_state
         -->
         <?php foreach ($airports as $airport): ?>
-        <tr>
-            <td><?= $airport['name'] ?></td>
-            <td><?= $airport['code'] ?></td>
-            <td><a href="index.php?page=1&filter_by_state=<?= $airport['state_name'] ?>"><?= $airport['state_name'] ?></a></td>
-            <td><?= $airport['city_name'] ?></td>
-            <td><?= $airport['address'] ?></td>
-            <td><?= $airport['timezone'] ?></td>
-        </tr>
+            <tr>
+                <td><?= $airport['name'] ?></td>
+                <td><?= $airport['code'] ?></td>
+                <td>
+                    <a href="index.php?page=1&filter_by_state=<?= $airport['state_name'] ?>"><?= $airport['state_name'] ?></a>
+                </td>
+                <td><?= $airport['city_name'] ?></td>
+                <td><?= $airport['address'] ?></td>
+                <td><?= $airport['timezone'] ?></td>
+            </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
