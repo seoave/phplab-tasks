@@ -2,16 +2,22 @@
 /**
  * Connect to DB
  */
+/** @var \PDO $pdo */
+require_once './pdo_ini.php';
 
 /**
  * SELECT the list of unique first letters using https://www.w3resource.com/mysql/string-functions/mysql-left-function.php
  * and https://www.w3resource.com/sql/select-statement/queries-with-distinct.php
  * and set the result to $uniqueFirstLetters variable
  */
-$uniqueFirstLetters = ['A', 'B', 'C'];
+$sth = $pdo->prepare('SELECT DISTINCT LEFT(name,1) FROM airports ORDER BY name ASC');
+$sth->setFetchMode(\PDO::FETCH_ASSOC);
+$sth->execute();
+$uniqueFirstLetters = $sth->fetchAll(PDO::FETCH_COLUMN);
 
 // Filtering
 /**
+ * 
  * Here you need to check $_GET request if it has any filtering
  * and apply filtering by First Airport Name Letter and/or Airport State
  * (see Filtering tasks 1 and 2 below)
@@ -20,6 +26,46 @@ $uniqueFirstLetters = ['A', 'B', 'C'];
  * For filtering by state you will need to JOIN states table and check if states.name = A
  * where A - requested filter value
  */
+$params = [];
+if(isset($_GET['filter_by_first_letter'])) {
+    $letter = $_GET['filter_by_first_letter'];
+
+    $query = <<<'SQL'
+    SELECT 
+    airports.name, 
+    airports.code, 
+    airports.address, 
+    airports.timezone, 
+    cities.name AS city_name, 
+    states.name AS state_name 
+    FROM airports 
+    JOIN cities ON cities.id = airports.city_id 
+    JOIN states ON states.id = airports.state_id
+    WHERE airports.name LIKE :letter
+    SQL;
+
+    $params['letter'] = $letter . '%';
+}
+
+if(isset($_GET['filter_by_state'])) {
+    $state = $_GET['filter_by_state'];
+
+    $query = <<<'SQL'
+    SELECT 
+    airports.name, 
+    airports.code, 
+    airports.address, 
+    airports.timezone, 
+    cities.name AS city_name, 
+    states.name AS state_name 
+    FROM airports 
+    JOIN cities ON cities.id = airports.city_id 
+    JOIN states ON states.id = airports.state_id
+    WHERE states.name = :state
+    SQL;
+
+    $params[':state'] = $state;
+}
 
 // Sorting
 /**
@@ -30,6 +76,26 @@ $uniqueFirstLetters = ['A', 'B', 'C'];
  * For sorting use ORDER BY A
  * where A - requested filter value
  */
+
+if(isset($_GET['sort'])) {
+    $sort = $_GET['sort'];
+
+    $query = <<<'SQL'
+    SELECT 
+    airports.name, 
+    airports.code, 
+    airports.address, 
+    airports.timezone, 
+    cities.name AS city_name, 
+    states.name AS state_name 
+    FROM airports 
+    JOIN cities ON cities.id = airports.city_id 
+    JOIN states ON states.id = airports.state_id
+    ORDER BY :sortKey ASC
+    SQL;
+
+    $params[':sortKey'] = $sort;
+}
 
 // Pagination
 /**
@@ -47,7 +113,41 @@ $uniqueFirstLetters = ['A', 'B', 'C'];
  *
  * For city_name and state_name fields you can use alias https://www.mysqltutorial.org/mysql-alias/
  */
-$airports = [];
+if(!$query) {
+    $query = <<<'SQL'
+    SELECT 
+    airports.name, 
+    airports.code, 
+    airports.address, 
+    airports.timezone, 
+    cities.name AS city_name, 
+    states.name AS state_name 
+    FROM airports 
+    JOIN cities ON cities.id = airports.city_id 
+    JOIN states ON states.id = airports.state_id
+    SQL;
+}
+
+$sth = $pdo->prepare($query);
+$sth->setFetchMode(\PDO::FETCH_ASSOC);
+
+if($params) {
+    $sth->execute($params);
+} else {
+    $sth->execute();
+}
+$airports = $sth->fetchAll();
+
+echo 'debug<br>';
+echo '<pre>';
+var_dump($_REQUEST);
+var_dump($letter);
+var_dump($query);
+var_dump($params);
+//var_dump($airports);
+echo '</pre>'; 
+
+// $airports = [];
 ?>
 <!doctype html>
 <html lang="en">
@@ -78,10 +178,10 @@ $airports = [];
         Filter by first letter:
 
         <?php foreach ($uniqueFirstLetters as $letter): ?>
-            <a href="#"><?= $letter ?></a>
+            <a href="?page=1&filter_by_first_letter=<?= $letter ?>"><?= $letter ?></a>
         <?php endforeach; ?>
 
-        <a href="/" class="float-right">Reset all filters</a>
+        <a href="index.php" class="float-right">Reset all filters</a>
     </div>
 
     <!--
@@ -97,10 +197,10 @@ $airports = [];
     <table class="table">
         <thead>
         <tr>
-            <th scope="col"><a href="#">Name</a></th>
-            <th scope="col"><a href="#">Code</a></th>
-            <th scope="col"><a href="#">State</a></th>
-            <th scope="col"><a href="#">City</a></th>
+            <th scope="col"><a href="?sort=name">Name</a></th>
+            <th scope="col"><a href="?sort=code">Code</a></th>
+            <th scope="col"><a href="?sort=state_name">State</a></th>
+            <th scope="col"><a href="?sort=city_name">City</a></th>
             <th scope="col">Address</th>
             <th scope="col">Timezone</th>
         </tr>
@@ -120,7 +220,7 @@ $airports = [];
         <tr>
             <td><?= $airport['name'] ?></td>
             <td><?= $airport['code'] ?></td>
-            <td><a href="#"><?= $airport['state_name'] ?></a></td>
+            <td><a href="index.php?page=1&filter_by_state=<?= $airport['state_name'] ?>"><?= $airport['state_name'] ?></a></td>
             <td><?= $airport['city_name'] ?></td>
             <td><?= $airport['address'] ?></td>
             <td><?= $airport['timezone'] ?></td>
