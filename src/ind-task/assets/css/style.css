@@ -1,8 +1,19 @@
-ul {
+ul.tasks {
+    width: 100%;
+    max-width: 550px;
     margin: 0;
     padding: 0;
 }
 
 li {
     list-style: none;
+}
+.done .done-btn {
+    border: none;
+}
+.done span {
+    text-decoration: line-through;
+}
+span.disable {
+    display: none;
 }
