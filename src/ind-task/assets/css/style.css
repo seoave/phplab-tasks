@@ -1,3 +1,26 @@
+/* common*/
+section {
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+article {
+    text-align: center;
+}
+
+section.body {
+    text-align: left;
+}
+section.body form {
+    max-width: 600px;
+}
+form#addForm {
+    margin-bottom: 32px;
+}
+input#add-task {
+    width: 85%;
+}
+
 ul.tasks {
     width: 100%;
     max-width: 550px;
@@ -7,13 +30,65 @@ ul.tasks {
 
 li {
     list-style: none;
+    display: inline-flex;
+    align-items: flex-start;
+    border-bottom: 1px #ccc dashed;
+    margin-bottom: 24px;
+    padding-bottom: 6px;
 }
+
+.done-btn {
+    width: 50px;
+    margin-right: 16px;
+}
+
 .done .done-btn {
     border: none;
 }
-.done span {
-    text-decoration: line-through;
-}
-span.disable {
+
+.done .done-btn a {
     display: none;
+}
+
+span.text {
+    width: 400px;
+    display: inline-block;
+    margin-right: 16px;
+    overflow-wrap: break-word;
+}
+
+.done .text {
+    text-decoration: line-through;
+    background-color: #efefef;
+}
+
+.disable {
+    display: none;
+}
+
+.done .disable {
+    display: inline-block;
+}
+
+/*registration*/
+section.header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.auth {
+    max-width: 100px;
+}
+
+.registration {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.registration input {
+    margin-bottom: 16px;
+    height: 24px;
 }
