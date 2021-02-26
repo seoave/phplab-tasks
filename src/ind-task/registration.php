@@ -15,35 +15,21 @@ require_once './functions.php';
 </head>
 <body>
 <main>
-<article>
-    <section class="header">
-        <div class="auth">
-            <?php $viewName = $_SESSION['username'] ? $_SESSION['username'] : 'stranger'; ?>
-            <span class="user">Hello, <?= $viewName ?></span>
+    <article>
+        <?php include './header.php' ?>
+        <h1>Registration</h1>
 
-            <?php if(!$_SESSION['userId']) { ?>
-                <a class="login" href="./login.php">Login</a>
-                <a class="register" href="./registration.php">Register</a>
-            <?php } ?>
+        <?php if ($errorMessage) {
+            echo '<p class="error-msg">' . $errorMessage . '</p>';
+        }
+        ?>
 
-            <?php if($_SESSION['userId']) { ?>
-                <a href="?logout=1" class="logout">Logout</a>
-            <?php } ?>
-        </div>
-    </section>
-<h1>Registration</h1>
-
-    <?php if($errorMessage) {
-        echo $errorMessage;
-    }
-    ?>
-
-<form class="registration" method="post">
-    <input type="text" name="newlogin" id="newlogin" placeholder="Enter your username">
-    <input type="password" name="newpass" id="newpass" placeholder="Enter your password">
-    <input type="submit" value="Register">
-</form>
-</article>
+        <form class="registration" method="post">
+            <input type="text" name="newlogin" id="newlogin" placeholder="Enter your username">
+            <input type="password" name="newpass" id="newpass" placeholder="Enter your password">
+            <input type="submit" value="Register">
+        </form>
+    </article>
 </main>
 </body>
 </html>

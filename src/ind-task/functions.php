@@ -7,7 +7,11 @@ require_once './pdo_ini.php';
 
 session_start();
 
-// new user registration
+/**
+ * User registration &  authorization
+ */
+
+/** new user registration */
 if ($_POST['newlogin'] && $_POST['newpass']) {
     $sth = $pdo->prepare('SELECT username FROM users WHERE username = :username');
     $sth->setFetchMode(\PDO::FETCH_ASSOC);
@@ -20,6 +24,8 @@ if ($_POST['newlogin'] && $_POST['newpass']) {
         $_SESSION['username'] = $_POST['newlogin'];
         $errorMessage = 'You are registered successfully';
         $errorMessage .= '<br>Follow <a href="./index.php">link</a> to use your todo list';
+        header("location: index.php");
+        exit();
     } else {
         $errorMessage = "Sorry, username \"{$_POST['newlogin']}\" is not available";
     }
@@ -29,7 +35,7 @@ if ($_POST['newlogin'] && $_POST['newpass']) {
     }
 }
 
-// user login
+/** user login */
 if ($_POST['login'] && $_POST['pass']) {
     // looking for username
     $sth = $pdo->prepare('SELECT username FROM users WHERE username = :username');
@@ -49,6 +55,8 @@ if ($_POST['login'] && $_POST['pass']) {
             $_SESSION['username'] = $_POST['login'];
             $errorMessage = 'You login successfully';
             $errorMessage .= '<br>Follow <a href="./index.php">link</a> to use your todo list';
+            header("location: index.php");
+            exit();
         } else {
             $errorMessage = "Sorry, your password is wrong";
         }
@@ -64,38 +72,87 @@ if ($_POST['login'] && $_POST['pass']) {
     }
 }
 
-// on logout clean $_SESSION
+/**
+ * logout
+ * clean $_SESSION
+ */
 if ($_GET['logout'] == 1) {
     $_SESSION = [];
 }
 
-// tasks
 
+/**
+ * Lists
+ */
+
+/**
+ * get all username lists
+ * @param $pdo
+ * @return array $lists
+ */
+function getAllLists($pdo):array
+{
+    require_once './pdo_ini.php';
+    $sth = $pdo->prepare('SELECT id, list_name FROM lists WHERE user_id = :user_id ORDER BY created_at DESC');
+    $sth->setFetchMode(\PDO::FETCH_ASSOC);
+    $sth->execute([':user_id' => $_SESSION['userId']]);
+    return $sth->fetchAll();
+}
+
+/** set list_id */
 if (!$_SESSION['list_id'] && $_SESSION['userId']) {
     // check if user has list_id
-    $sth = $pdo->prepare('SELECT id FROM lists WHERE user_id = :user_id');
-    $sth->execute([':user_id'=>$_SESSION['userId']]);
+    $sth = $pdo->prepare('SELECT MAX(id) FROM lists WHERE user_id = :user_id');
+    $sth->setFetchMode(\PDO::FETCH_ASSOC);
+    $sth->execute([':user_id' => $_SESSION['userId']]);
     $listID = $sth->fetch();
 
-    if(!$listID) {
+    if (!$listID) {
         $sth = $pdo->prepare('INSERT INTO lists (created_at,user_id) VALUES (NOW(),:user_id)');
-        $sth->execute([':user_id'=>$_SESSION['userId']]);
+        $sth->execute([':user_id' => $_SESSION['userId']]);
         $_SESSION['list_id'] = $pdo->lastInsertId();
     } else {
-        $_SESSION['list_id'] = $listID;
+        $_SESSION['list_id'] = $listID['MAX(id)'];
     }
 }
 
-function getAllTasks($pdo)
+/** add new list */
+if ($_GET['addList']) {
+    // request to DB, create new list
+    $sth = $pdo->prepare('INSERT INTO lists (created_at,user_id,list_name) VALUES (NOW(), :user_id, :list_name)');
+    $sth->execute([':user_id' => $_SESSION['userId'], ':list_name' => $_GET['addList']]);
+    header("location: index.php");
+    exit();
+}
+
+/** set other list */
+
+if($_GET['setList']) {
+    $_SESSION['list_id'] = $_GET['setList'];
+}
+
+/**
+ * Tasks
+ *
+ */
+
+
+/**
+ * get all username tasks
+ * @param $pdo
+ * @return array
+ */
+function getAllTasks($pdo): array
 {
     require_once './pdo_ini.php';
     $sth = $pdo->prepare('SELECT id,title,is_done FROM tasks WHERE list_id = :list_id ORDER BY created_at DESC');
-    $sth->execute([':list_id'=>$_SESSION['list_id']]);
+    $sth->execute([':list_id' => $_SESSION['list_id']]);
     $tasks = $sth->fetchAll();
 
     return $tasks;
 }
 
+/** add new task */
 if (isset($_GET['addTask']) && !$_GET['addTask'] == '') {
     $newTask = $_GET['addTask'];
     $sth = $pdo->prepare('INSERT INTO tasks (list_id, title, is_done, created_at) VALUES (:list_id,:task,0, NOW())');
@@ -103,6 +160,7 @@ if (isset($_GET['addTask']) && !$_GET['addTask'] == '') {
     header("location: index.php");
 }
 
+/** delete task */
 if (isset($_GET['delete'])) {
     $deleteTask = $_GET['delete'];
     $sth = $pdo->prepare('DELETE FROM tasks WHERE id = :id ');
@@ -110,9 +168,18 @@ if (isset($_GET['delete'])) {
     header("location: index.php");
 }
 
+/** done task */
 if (isset($_GET['done'])) {
     $doneTask = $_GET['done'];
     $sth = $pdo->prepare('UPDATE tasks SET is_done = 1 WHERE id = :id ');
     $sth->execute([':id' => $doneTask]);
     header("location: index.php");
 }
+
+
+echo '<pre>';
+print_r($_SESSION);
+print_r($_GET);
+//var_dump($listID);
+//var_dump(getAllLists($pdo));
+echo '</pre>';

@@ -1,4 +1,8 @@
 /* common*/
+body {
+    font-family: Arial, sans-serif;
+}
+
 section {
     padding: 16px;
     margin-bottom: 16px;
@@ -10,20 +14,40 @@ article {
 
 section.body {
     text-align: left;
+    display: flex;
+    justify-content: space-between;
 }
+
 section.body form {
     max-width: 600px;
 }
+
+.task-wrapper {
+    width: 100%;
+    max-width: 600px;
+    margin-right: 16px;
+    padding: 20px 10px;
+    background-color: #efefef;
+}
+
 form#addForm {
     margin-bottom: 32px;
 }
+
 input#add-task {
     width: 85%;
 }
 
 ul.tasks {
-    width: 100%;
     max-width: 550px;
+}
+
+ul.lists {
+    max-width: 300px;
+}
+
+ul.tasks, ul.lists {
+    width: 100%;
     margin: 0;
     padding: 0;
 }
@@ -37,8 +61,24 @@ li {
     padding-bottom: 6px;
 }
 
+
+.lists.wrapper {
+    max-width: 35%;
+}
+
+ul.lists li {
+    width: 100%;
+}
+
 .done-btn {
     width: 50px;
+}
+
+li.list-item a {
+    text-decoration: none;
+}
+
+.rename-btn, .done-btn, .list-name {
     margin-right: 16px;
 }
 
@@ -57,6 +97,11 @@ span.text {
     overflow-wrap: break-word;
 }
 
+.active-list {
+    color: green;
+    font-weight: 600;
+}
+
 .done .text {
     text-decoration: line-through;
     background-color: #efefef;
@@ -73,7 +118,7 @@ span.text {
 /*registration*/
 section.header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 .auth {
