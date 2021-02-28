@@ -1,6 +1,6 @@
 <?php
-$tasks = []; // all tasks array
-require_once './functions.php';
+    $tasks = []; // all tasks array
+    require_once './functions.php';
 ?>
 
 <!doctype html>
@@ -73,9 +73,7 @@ require_once './functions.php';
                                 }
                                 ?>
                                 <li class="list-item <?= $activeList ?>">
-                                    <button class="rename-btn">
-                                        <a href="?rename=<?= $list['id'] ?>">Rename</a>
-                                    </button>
+<!--                                    git-->
                                     <a href="?setList=<?= $list['id'] ?>">
                                         <span class="list-name"><?= $list['list_name'] ?></span>
                                     </a>
