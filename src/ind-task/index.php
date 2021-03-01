@@ -11,6 +11,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -19,14 +20,21 @@
 
         <?php include './header.php' ?>
 
-        <h1>To-do List</h1>
+        <h1 class="text-center">To-do List</h1>
 
         <?php if (!$_SESSION['userId']) { ?>
-            <p>Please, login or register to use todo list</p>
+            <p class="text-center">Please, login or register to use todo list</p>
         <?php } ?>
+        <?php if ($errorMessage) {
+            echo '<p class="error-msg text-center">' . $errorMessage . '</p>';
+        }
+        ?>
 
         <section class="body">
-            <div class="task-wrapper">
+            <div class="container">
+                <div class="row">
+
+            <div class="task-wrapper col-12 col-md-7">
                 <form id="addForm" class="addForm">
                     <input id="add-task" class="task" name="addTask" type="text" placeholder="Add new task">
                     <input type="submit" value="+">
@@ -56,7 +64,8 @@
                     </ul>
                 </form>
             </div>
-            <div class="lists wrapper">
+
+            <div class="lists wrapper col-12 col-md-5">
                 <form id="addListForm" class="addlist-form">
                     <input id="add-list" class="list" name="addList" type="text" placeholder="Add new list">
                     <input type="submit" value="+">
@@ -73,11 +82,10 @@
                                 }
                                 ?>
                                 <li class="list-item <?= $activeList ?>">
-<!--                                    git-->
                                     <a href="?setList=<?= $list['id'] ?>">
                                         <span class="list-name"><?= $list['list_name'] ?></span>
                                     </a>
-                                    <button class="delete-button"><a href="?deletelist=<?= $task['id'] ?>">Delete</a>
+                                    <button class="delete-button"><a href="?deletelist=<?= $list['id'] ?>">Delete</a>
                                     </button>
                                 </li>
                             <?php }
@@ -88,6 +96,8 @@
                         ?>
                     </ul>
                 </form>
+            </div>
+                </div>
             </div>
         </section>
     </article>
